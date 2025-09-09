@@ -1,9 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");  // ✅ added
 const employeeRoutes = require("./routes/employees");
+const workLogRoutes = require("./routes/worklogs");
+
 const app = express();
 
+// ===== Middleware =====
 app.use(express.json());
+app.use(cors()); // ✅ allow React frontend to call backend
 
 // ===== MongoDB Connection =====
 const mongoURI = process.env.MONGODB_URI;
@@ -21,7 +26,6 @@ db.once("open", () => {
 
 // ===== Routes =====
 app.use("/api/employees", employeeRoutes);
-const workLogRoutes = require("./routes/worklogs");
 app.use("/api/worklogs", workLogRoutes);
 
 // ===== Test Route =====
