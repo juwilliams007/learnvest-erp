@@ -24,9 +24,19 @@ db.once("open", () => {
   console.log("Connected to MongoDB");
 });
 
+app.get("/api", (req, res) => {
+  res.json({
+    status: "ok",
+    service: "learnvest-erp",
+    endpoints: ["/api/employees", "/api/worklogs"]
+  });
+});
+
+
 // ===== Routes =====
 app.use("/api/employees", employeeRoutes);
 app.use("/api/worklogs", workLogRoutes);
+
 
 // ===== Test Route =====
 app.get("/", (req, res) => {
