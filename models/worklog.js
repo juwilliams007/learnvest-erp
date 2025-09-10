@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const workLogSchema = new mongoose.Schema({
   employeeId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Employee",
+    ref: "employee",
     required: true,
   },
   date: {
