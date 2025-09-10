@@ -1,42 +1,43 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const cors = require("cors");  // ✅ added
+const cors = require("cors");
 const employeeRoutes = require("./routes/employees");
 const workLogRoutes = require("./routes/worklogs");
+const authRoutes = require("./routes/auth");
 
 const app = express();
 
 // ===== Middleware =====
 app.use(express.json());
-app.use(cors()); // ✅ allow React frontend to call backend
+app.use(cors()); // allow React frontend to call backend
 
 // ===== MongoDB Connection =====
 const mongoURI = process.env.MONGODB_URI;
+if (!mongoURI) {
+  console.error("❌ MongoDB URI not provided!");
+  process.exit(1);
+}
 
-mongoose.connect(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(mongoURI)
+  .then(() => console.log("Connected to MongoDB"))
+  .catch(err => {
+    console.error("MongoDB connection error:", err);
+    process.exit(1);
+  });
 
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", () => {
-  console.log("Connected to MongoDB");
-});
-
+// ===== API Index =====
 app.get("/api", (req, res) => {
   res.json({
     status: "ok",
     service: "learnvest-erp",
-    endpoints: ["/api/employees", "/api/worklogs"]
+    endpoints: ["/api/employees", "/api/worklogs", "/api/auth"]
   });
 });
 
-
 // ===== Routes =====
+app.use("/api/auth", authRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/worklogs", workLogRoutes);
-
 
 // ===== Test Route =====
 app.get("/", (req, res) => {
