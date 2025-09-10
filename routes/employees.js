@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const Employee = require("../models/Employee");
-const { protect } = require("../middleware/auth");
+const Employee = require("../models/employee");   // ⬅ lowercase
+const { protect } = require("../middleware/auth"); // already lowercase
 
 // Get employees (protected)
 router.get("/", protect, async (req, res) => {

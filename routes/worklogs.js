@@ -1,15 +1,15 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const router = express.Router();
 const WorkLog = require("../models/worklog");
+const { protect } = require("../middleware/auth"); // ⬅ added
 
 // Create a new log (Clock In + tasks + next day plan)
-router.post("/", async (req, res) => {
+router.post("/", protect, async (req, res) => {
   try {
     const { employeeId, clockIn, clockOut, tasks, nextDayPlan } = req.body;
 
     const workLog = new WorkLog({
-      employeeId,   // ✅ let Mongoose handle casting
+      employeeId,
       clockIn,
       clockOut,
       tasks,
@@ -23,10 +23,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-
-
 // Get all logs
-router.get("/", async (req, res) => {
+router.get("/", protect, async (req, res) => {
   try {
     const logs = await WorkLog.find().populate("employeeId", "name email");
     res.json(logs);
@@ -36,7 +34,7 @@ router.get("/", async (req, res) => {
 });
 
 // Get logs for one employee
-router.get("/employee/:employeeId", async (req, res) => {
+router.get("/employee/:employeeId", protect, async (req, res) => {
   try {
     const logs = await WorkLog.find({ employeeId: req.params.employeeId })
       .sort({ date: -1 })
@@ -47,8 +45,8 @@ router.get("/employee/:employeeId", async (req, res) => {
   }
 });
 
-// Update log (e.g. add clockOut, add tasks, update nextDayPlan)
-router.put("/:id", async (req, res) => {
+// Update log
+router.put("/:id", protect, async (req, res) => {
   try {
     const log = await WorkLog.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -61,7 +59,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // Delete log
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", protect, async (req, res) => {
   try {
     const log = await WorkLog.findByIdAndDelete(req.params.id);
     if (!log) return res.status(404).json({ message: "Log not found" });
@@ -72,7 +70,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 // Delete all logs
-router.delete("/", async (req, res) => {
+router.delete("/", protect, async (req, res) => {
   try {
     await WorkLog.deleteMany({});
     res.json({ message: "All worklogs deleted successfully" });
