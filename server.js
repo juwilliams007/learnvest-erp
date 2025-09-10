@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+
+// ===== Route Imports (all lowercase filenames) =====
 const employeeRoutes = require("./routes/employees");
 const workLogRoutes = require("./routes/worklogs");
 const authRoutes = require("./routes/auth");
@@ -18,10 +20,11 @@ if (!mongoURI) {
   process.exit(1);
 }
 
-mongoose.connect(mongoURI)
-  .then(() => console.log("Connected to MongoDB"))
-  .catch(err => {
-    console.error("MongoDB connection error:", err);
+mongoose
+  .connect(mongoURI)
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch((err) => {
+    console.error("❌ MongoDB connection error:", err);
     process.exit(1);
   });
 
@@ -30,7 +33,7 @@ app.get("/api", (req, res) => {
   res.json({
     status: "ok",
     service: "learnvest-erp",
-    endpoints: ["/api/employees", "/api/worklogs", "/api/auth"]
+    endpoints: ["/api/auth", "/api/employees", "/api/worklogs"],
   });
 });
 
@@ -47,5 +50,5 @@ app.get("/", (req, res) => {
 // ===== Server Start =====
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`🚀 Server is running on port ${PORT}`);
 });
