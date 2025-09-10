@@ -20,4 +20,5 @@ const employeeSchema = new mongoose.Schema({
   },
 });
 
+// The first argument "Employee" = collection will be "employees"
 module.exports = mongoose.model("Employee", employeeSchema);
