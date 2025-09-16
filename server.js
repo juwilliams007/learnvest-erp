@@ -1,17 +1,31 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-
-// ===== Route Imports (all lowercase filenames) =====
-const employeeRoutes = require("./routes/employees");
-const workLogRoutes = require("./routes/worklogs");
-const authRoutes = require("./routes/auth");
+require("dotenv").config();   // ✅ Load variables from .env
 
 const app = express();
 
 // ===== Middleware =====
 app.use(express.json());
-app.use(cors()); // allow React frontend to call backend
+
+// ✅ Allow frontend from localhost:3000 AND deployed frontend (if any)
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://learnvest-erp.onrender.com" // allow deployed frontend if needed
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+
+// ===== Route Imports (all lowercase filenames) =====
+const userRoutes = require("./routes/user");
+const employeeRoutes = require("./routes/employees");
+const workLogRoutes = require("./routes/worklogs");
+const authRoutes = require("./routes/auth");
+const attendanceRoutes = require("./routes/attendance");
 
 // ===== MongoDB Connection =====
 const mongoURI = process.env.MONGODB_URI;
@@ -33,14 +47,22 @@ app.get("/api", (req, res) => {
   res.json({
     status: "ok",
     service: "learnvest-erp",
-    endpoints: ["/api/auth", "/api/employees", "/api/worklogs"],
+    endpoints: [
+      "/api/auth",
+      "/api/users",
+      "/api/employees",
+      "/api/worklogs",
+      "/api/attendance",
+    ],
   });
 });
 
 // ===== Routes =====
 app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/worklogs", workLogRoutes);
+app.use("/api/attendance", attendanceRoutes);
 
 // ===== Test Route =====
 app.get("/", (req, res) => {

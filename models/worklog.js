@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const workLogSchema = new mongoose.Schema({
   employeeId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "employee",
+    ref: "User",   // ✅ link worklogs directly to users
     required: true,
   },
   date: {
