@@ -8,12 +8,12 @@ const app = express();
 // ===== Middleware =====
 app.use(express.json());
 
-// ✅ Allow frontend from localhost:3000 AND deployed frontend (if any)
+// ✅ Allow frontend from localhost:3000 AND deployed frontend
 app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://learnvest-erp.onrender.com" // allow deployed frontend if needed
+      "https://learnvest-erp-frontend.onrender.com" // correct frontend URL
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
