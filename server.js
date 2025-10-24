@@ -64,6 +64,16 @@ app.use("/api/employees", employeeRoutes);
 app.use("/api/worklogs", workLogRoutes);
 app.use("/api/attendance", attendanceRoutes);
 
+// ===== Health Check Route =====
+app.get("/health", (req, res) => {
+  res.json({
+    status: "healthy",
+    timestamp: new Date().toISOString(),
+    mongodb: mongoose.connection.readyState === 1 ? "connected" : "disconnected",
+    environment: process.env.NODE_ENV || "development",
+  });
+});
+
 // ===== Test Route =====
 app.get("/", (req, res) => {
   res.send("Learnvest ERP API is running...");
