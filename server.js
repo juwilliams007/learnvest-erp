@@ -26,6 +26,7 @@ const employeeRoutes = require("./routes/employees");
 const workLogRoutes = require("./routes/worklogs");
 const authRoutes = require("./routes/auth");
 const attendanceRoutes = require("./routes/attendance");
+const taskRoutes = require("./routes/tasks");
 
 // ===== MongoDB Connection =====
 const mongoURI = process.env.MONGODB_URI;
@@ -53,6 +54,7 @@ app.get("/api", (req, res) => {
       "/api/employees",
       "/api/worklogs",
       "/api/attendance",
+      "/api/tasks",
     ],
   });
 });
@@ -63,6 +65,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/worklogs", workLogRoutes);
 app.use("/api/attendance", attendanceRoutes);
+app.use("/api/tasks", taskRoutes);
 
 // ===== Test Route =====
 app.get("/", (req, res) => {
