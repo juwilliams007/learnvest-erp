@@ -67,14 +67,24 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // Check if password has been set
-    if (!user.passwordSet) {
+    // Check if user has a password
+    if (!user.password) {
       return res.status(403).json({
         message: "Password not set. Please use the invite link sent by your admin to set up your password."
       });
     }
 
-    if (await user.matchPassword(password)) {
+    // Verify password
+    const isPasswordMatch = await user.matchPassword(password);
+
+    if (isPasswordMatch) {
+      // Auto-fix: If user has valid password but passwordSet is false (legacy users), update it
+      if (!user.passwordSet) {
+        user.passwordSet = true;
+        await user.save();
+        console.log(`✅ Auto-fixed passwordSet for legacy user: ${user.email}`);
+      }
+
       res.json({
         _id: user._id,
         name: user.name,
