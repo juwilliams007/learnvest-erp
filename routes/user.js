@@ -42,6 +42,7 @@ router.post("/", protect, roleCheck("admin"), async (req, res) => {
       email,
       password: hashedPassword,
       role: role || "employee",
+      passwordSet: true, // Mark password as set for direct user creation
     });
 
     await newUser.save();
